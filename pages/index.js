@@ -1,9 +1,17 @@
-import React from 'react';
+import Header from 'next/head';
+import Wrapper from '../components/Wrapper';
 
 const Main = () => {
   return (
-    <h1>Ola</h1>
-  )
-}
+    <>
+      <Header>
+        <title>ET BD</title>
+      </Header>
+      <Wrapper>
+        ola gente
+      </Wrapper>
+    </>
+  );
+};
 
 export default Main;
