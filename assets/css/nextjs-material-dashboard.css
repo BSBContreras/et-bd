@@ -53,6 +53,15 @@
   display: flex;
 }
 
+.ct-chart-line .ct-label,
+.ct-chart-bar .ct-label {
+  color: black;
+}
+
+.ct-series-a .ct-bar {
+  stroke: #ff9800;
+}
+
 .ct-label {
   fill: rgba(0, 0, 0, 0.4);
   line-height: 1;
@@ -92,6 +101,7 @@ h3 {
   font-size: 1.825em;
   line-height: 1.4em;
   margin: 20px 0 10px;
+  text-align: center;
 }
 
 h4 {

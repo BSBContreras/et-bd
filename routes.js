@@ -16,6 +16,7 @@
 
 */
 // @material-ui/icons
+import Statistics from "@material-ui/icons/Equalizer";
 import Dashboard from "@material-ui/icons/Dashboard";
 import Person from "@material-ui/icons/Person";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
@@ -26,6 +27,13 @@ import Unarchive from "@material-ui/icons/Unarchive";
 import Language from "@material-ui/icons/Language";
 
 const dashboardRoutes = [
+  {
+    path: "/statistics",
+    name: "Estatísticas",
+    icon: Statistics,
+
+    layout: "/admin",
+  },
   {
     path: "/dashboard",
     name: "Dashboard",
