@@ -19,28 +19,24 @@ import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js
 
 const useStyles = makeStyles(styles);
 
-const delays2 = 80,
-  durations2 = 500;
+const delays2 = 80, durations2 = 500;
+
 const histogramData = {
   data: {
     labels: [
-      "Conflito 1",
-      "Conflito 2",
-      "Conflito 3",
-      "Conflito 4",
-      "Conflito 5",
-      "Conflito 6",
-      "Conflito 7",
-      "Conflito 8",
+      "Religioso",
+      "Territorial",
+      "Racial",
+      "Econômico"      
     ],
-    series: [[542, 443, 320, 780, 553, 453, 326, 434]],
+    series: [[542, 443, 320, 780]],
   },
   options: {
     axisX: {
-      showGrid: false,
+      showGrid: true,
     },
     low: 0,
-    high: 1000,
+    high: 780,
     chartPadding: {
       top: 0,
       right: 5,
@@ -64,6 +60,9 @@ const histogramData = {
   animation: {
     draw: function (data) {
       if (data.type === "bar") {
+        data.element.attr({
+          style: 'stroke-width: 40px'
+        });
         data.element.animate({
           opacity: {
             begin: (data.index + 1) * delays2,
@@ -78,99 +77,106 @@ const histogramData = {
   },
 };
 
+
 function Statistics() {
   const classes = useStyles();
   return (
-    <div>
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={6}>
-          <CustomTabs
-            title="Top 5:"
-            headerColor="dark"
-            tabs={[
-              {
-                tabName: "Conflitos",
-                tabIcon: SportsKabaddi,
-                tabContent: (
-                  <>
-                    <h3>SELECT * FROM conflitos ORDER BY num_mortos LIMIT 5</h3>
-                    <Table
-                      tableHeaderColor="warning"
-                      tableHead={["ID", "Nome do Conflito", "Número de Mortos"]}
-                      tableData={[
-                        ["1", "Free Fire vs PUBG", "1.254"],
-                        ["2", "Dota 2 vs LOL", "932"],
-                        ["3", "Bolacha vs Biscoito", "325"],
-                        ["4", "Nakano vs Daniel lanchando em sala", "2"],
-                        ["5", "Fausto Silva vs Thanos", "2"],
-                      ]}
-                    />
-                  </>
-                ),
-              },
-              {
-                tabName: "Organizações",
-                tabIcon: Domain,
-                tabContent: (
-                  <>
-                    <h3>SELECT * FROM organizacoes ORDER BY mediacoes LIMIT 5</h3>
-                    <Table
-                      tableHeaderColor="warning"
-                      tableHead={["ID", "Nome do Conflito", "Número de Mortos"]}
-                      tableData={[
-                        ["1", "Free Fire vs PUBG", "1.254"],
-                        ["2", "Dota 2 vs LOL", "932"],
-                        ["3", "Bolacha vs Biscoito", "325"],
-                        ["4", "Nakano vs Daniel lanchando em sala", "2"],
-                      ]}
-                    />
-                  </>
-                ),
-              },
-              {
-                tabName: "Grupos Armados",
-                tabIcon: LocationSearching,
-                tabContent: (
-                  <>
-                    <h3>SELECT * FROM conflitos ORDER BY num_mortos LIMIT 5</h3>
-                    <Table
-                      tableHeaderColor="warning"
-                      tableHead={["ID", "Nome do Conflito", "Número de Mortos"]}
-                      tableData={[
-                        ["1", "Free Fire vs PUBG", "1.254"],
-                        ["2", "Dota 2 vs LOL", "932"],
-                        ["3", "Bolacha vs Biscoito", "325"],
-                        ["4", "Nakano vs Daniel lanchando em sala", "2"],
-                      ]}
-                    />
-                  </>
-                ),
-              },
-            ]}
+    <>
+      <Card chart>
+        <CardHeader color="warning">
+          <h4 className={classes.cardTitleWhite}>
+            Histrograma: Tipos de Conflito
+          </h4>
+        </CardHeader>
+        <CardBody>
+          <ChartistGraph
+            className="ct-chart"
+            data={histogramData.data}
+            type="Bar"
+            options={histogramData.options}
+            responsiveOptions={histogramData.responsiveOptions}
+            listener={histogramData.animation}
           />
-        </GridItem>
+        </CardBody>
+      </Card>
 
-        <GridItem xs={12} sm={12} md={6}>
-          <Card chart>
-            <CardHeader color="warning">
-              <h4 className={classes.cardTitleWhite}>
-                Histrograma: Tipos de Conflito
-              </h4>
-            </CardHeader>
-            <CardBody>
-              <ChartistGraph
-                className="ct-chart"
-                data={histogramData.data}
-                type="Bar"
-                options={histogramData.options}
-                responsiveOptions={histogramData.responsiveOptions}
-                listener={histogramData.animation}
-              />
-            </CardBody>
-          </Card>
+      <CustomTabs
+        title="Top 5:"
+        headerColor="dark"
+        tabs={[
+          {
+            tabName: "Conflitos",
+            tabIcon: SportsKabaddi,
+            tabContent: (
+              <>
+                <h3>SELECT * FROM conflitos ORDER BY num_mortos LIMIT 5</h3>
+                <Table
+                  tableHeaderColor="warning"
+                  tableHead={["ID", "Nome do Conflito", "Número de Mortos"]}
+                  tableData={[
+                    ["1", "Free Fire vs PUBG", "1.254"],
+                    ["2", "Dota 2 vs LOL", "932"],
+                    ["3", "Bolacha vs Biscoito", "325"],
+                    ["4", "Nakano vs Daniel lanchando em sala", "2"],
+                    ["5", "Fausto Silva vs Thanos", "2"],
+                  ]}
+                />
+              </>
+            ),
+          },
+          {
+            tabName: "Organizações",
+            tabIcon: Domain,
+            tabContent: (
+              <>
+                <h3>SELECT * FROM organizacoes ORDER BY mediacoes LIMIT 5</h3>
+                <Table
+                  tableHeaderColor="warning"
+                  tableHead={["ID", "Nome do Conflito", "Número de Mortos"]}
+                  tableData={[
+                    ["1", "Free Fire vs PUBG", "1.254"],
+                    ["2", "Dota 2 vs LOL", "932"],
+                    ["3", "Bolacha vs Biscoito", "325"],
+                    ["4", "Nakano vs Daniel lanchando em sala", "2"],
+                  ]}
+                />
+              </>
+            ),
+          },
+          {
+            tabName: "Grupos Armados",
+            tabIcon: LocationSearching,
+            tabContent: (
+              <>
+                <h3>SELECT * FROM conflitos ORDER BY num_mortos LIMIT 5</h3>
+                <Table
+                  tableHeaderColor="warning"
+                  tableHead={["ID", "Nome do Conflito", "Número de Mortos"]}
+                  tableData={[
+                    ["1", "Free Fire vs PUBG", "1.254"],
+                    ["2", "Dota 2 vs LOL", "932"],
+                    ["3", "Bolacha vs Biscoito", "325"],
+                    ["4", "Nakano vs Daniel lanchando em sala", "2"],
+                  ]}
+                />
+              </>
+            ),
+          },
+        ]}
+      />
+
+      {/* <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+         
         </GridItem>
       </GridContainer>
-    </div>
+
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+          
+        </GridItem>
+      </GridContainer> */}
+    </>
   );
 }
 
