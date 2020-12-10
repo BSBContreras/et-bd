@@ -17,69 +17,54 @@ import LocationSearching from "@material-ui/icons/LocationSearching";
 
 import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
 
+import histogramConfig from '../../variables/histogram'
+import { url } from '../../variables/fetch'
+
 const useStyles = makeStyles(styles);
 
-const delays2 = 80, durations2 = 500;
+function toStringArray(arr) {
+  return Object.values(arr).map(value => String(value))
+}
 
-const histogramData = {
-  data: {
-    labels: [
-      "Religioso",
-      "Territorial",
-      "Racial",
-      "Econômico"      
-    ],
-    series: [[542, 443, 320, 780]],
-  },
-  options: {
-    axisX: {
-      showGrid: true,
-    },
-    low: 0,
-    high: 780,
-    chartPadding: {
-      top: 0,
-      right: 5,
-      bottom: 0,
-      left: 0,
-    },
-  },
-  responsiveOptions: [
-    [
-      "screen and (max-width: 640px)",
-      {
-        seriesBarDistance: 1,
-        axisX: {
-          labelInterpolationFnc: function (value) {
-            return value[0];
-          },
-        },
-      },
-    ],
-  ],
-  animation: {
-    draw: function (data) {
-      if (data.type === "bar") {
-        data.element.attr({
-          style: 'stroke-width: 40px'
-        });
-        data.element.animate({
-          opacity: {
-            begin: (data.index + 1) * delays2,
-            dur: durations2,
-            from: 0,
-            to: 1,
-            easing: "ease",
-          },
-        });
-      }
-    },
-  },
-};
+export const getServerSideProps = async () => {
+  let res = await fetch(`${url}/histograma`)
+  let data = await res.json()
 
+  const histogramData = {
+    labels: data.tipos,
+    series: [data.valores],
 
-function Statistics() {
+  }
+
+  res = await fetch(`${url}/top/conflito`)
+  data = await res.json()
+
+  const topConflitos = data.map(toStringArray)
+
+  res = await fetch(`${url}/top/organizacao`)
+  data = await res.json()
+
+  const topOrganizacoes = data.map(toStringArray)
+
+  res = await fetch(`${url}/top/grupo_armado`)
+  data = await res.json()
+
+  const topGruposArmados = data.map(toStringArray)
+
+  return {
+    props: {
+      histogramData,
+      topConflitos,
+      topOrganizacoes,
+      topGruposArmados
+    }
+  }
+}
+function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArmados }) {
   const classes = useStyles();
+
+  console.log(histogramData)
+
   return (
     <>
       <Card chart>
@@ -91,11 +76,11 @@ function Statistics() {
         <CardBody>
           <ChartistGraph
             className="ct-chart"
-            data={histogramData.data}
+            data={histogramData}
             type="Bar"
-            options={histogramData.options}
-            responsiveOptions={histogramData.responsiveOptions}
-            listener={histogramData.animation}
+            options={{ ...histogramConfig.options, high: Math.max(...histogramData.series[0], 1) }}
+            responsiveOptions={histogramConfig.responsiveOptions}
+            listener={histogramConfig.animation}
           />
         </CardBody>
       </Card>
@@ -108,74 +93,37 @@ function Statistics() {
             tabName: "Conflitos",
             tabIcon: SportsKabaddi,
             tabContent: (
-              <>
-                <h3>SELECT * FROM conflitos ORDER BY num_mortos LIMIT 5</h3>
-                <Table
-                  tableHeaderColor="warning"
-                  tableHead={["ID", "Nome do Conflito", "Número de Mortos"]}
-                  tableData={[
-                    ["1", "Free Fire vs PUBG", "1.254"],
-                    ["2", "Dota 2 vs LOL", "932"],
-                    ["3", "Bolacha vs Biscoito", "325"],
-                    ["4", "Nakano vs Daniel lanchando em sala", "2"],
-                    ["5", "Fausto Silva vs Thanos", "2"],
-                  ]}
-                />
-              </>
+              <Table
+                tableHeaderColor="warning"
+                tableHead={["Código", "Nome do Conflito", "Número de Feridos", "Número de Mortos"]}
+                tableData={topConflitos}
+              />
             ),
           },
           {
             tabName: "Organizações",
             tabIcon: Domain,
             tabContent: (
-              <>
-                <h3>SELECT * FROM organizacoes ORDER BY mediacoes LIMIT 5</h3>
-                <Table
-                  tableHeaderColor="warning"
-                  tableHead={["ID", "Nome do Conflito", "Número de Mortos"]}
-                  tableData={[
-                    ["1", "Free Fire vs PUBG", "1.254"],
-                    ["2", "Dota 2 vs LOL", "932"],
-                    ["3", "Bolacha vs Biscoito", "325"],
-                    ["4", "Nakano vs Daniel lanchando em sala", "2"],
-                  ]}
-                />
-              </>
+              <Table
+                tableHeaderColor="warning"
+                tableHead={["Código", "Nome da Organização", "Tipo", "Ajuda", "Mediações"]}
+                tableData={topOrganizacoes}
+              />
             ),
           },
           {
             tabName: "Grupos Armados",
             tabIcon: LocationSearching,
             tabContent: (
-              <>
-                <h3>SELECT * FROM conflitos ORDER BY num_mortos LIMIT 5</h3>
-                <Table
-                  tableHeaderColor="warning"
-                  tableHead={["ID", "Nome do Conflito", "Número de Mortos"]}
-                  tableData={[
-                    ["1", "Free Fire vs PUBG", "1.254"],
-                    ["2", "Dota 2 vs LOL", "932"],
-                    ["3", "Bolacha vs Biscoito", "325"],
-                    ["4", "Nakano vs Daniel lanchando em sala", "2"],
-                  ]}
-                />
-              </>
+              <Table
+                tableHeaderColor="warning"
+                tableHead={["Código", "Número de Armas", "Nome do Grupo"]}
+                tableData={topGruposArmados}
+              />
             ),
           },
         ]}
       />
-
-      {/* <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-         
-        </GridItem>
-      </GridContainer>
-
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-          
-        </GridItem>
-      </GridContainer> */}
     </>
   );
 }
