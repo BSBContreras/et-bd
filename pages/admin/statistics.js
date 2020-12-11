@@ -17,8 +17,8 @@ import LocationSearching from "@material-ui/icons/LocationSearching";
 
 import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
 
-import histogramConfig from '../../variables/histogram'
-import { url } from '../../variables/fetch'
+import histogramConfig from 'variables/histogram'
+import { url } from 'variables/fetch'
 
 const useStyles = makeStyles(styles);
 
@@ -31,9 +31,8 @@ export const getServerSideProps = async () => {
   let data = await res.json()
 
   const histogramData = {
-    labels: data.tipos,
-    series: [data.valores],
-
+    labels: data.tipos.map((label, i) => (`${label} (${data.valores[i]})`)),
+    series: [data.valores]
   }
 
   res = await fetch(`${url}/top/conflito`)
@@ -60,10 +59,9 @@ export const getServerSideProps = async () => {
     }
   }
 }
+
 function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArmados }) {
   const classes = useStyles();
-
-  console.log(histogramData)
 
   return (
     <>

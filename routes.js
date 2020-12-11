@@ -24,13 +24,20 @@ import BubbleChart from "@material-ui/icons/BubbleChart";
 import LocationOn from "@material-ui/icons/LocationOn";
 import Notifications from "@material-ui/icons/Notifications";
 import Unarchive from "@material-ui/icons/Unarchive";
-import Language from "@material-ui/icons/Language";
+import Create from "@material-ui/icons/Create";
 
 const dashboardRoutes = [
   {
     path: "/statistics",
     name: "Estatísticas",
     icon: Statistics,
+
+    layout: "/admin",
+  },
+  {
+    path: "/insert-data",
+    name: "Inserir dados",
+    icon: Create,
 
     layout: "/admin",
   },
