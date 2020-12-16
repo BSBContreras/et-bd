@@ -366,6 +366,15 @@ const CadastroChefeMilitar = ({ grupoArmadoOptions, openNotification }) => {
   }
 
   const onClickButton = () => {
+
+    console.log({ 
+      nome_lider: nomeLider, 
+      faixa: faixa,
+      cod_grupo_lider: Number(grupoIdLider), 
+      num_divisao: Number(numDivisao), 
+      cod_grupo_divisao: Number(grupoIdDivisao), 
+    })
+
     api.post(`${url}/chefe_militar`, { 
       nome_lider: nomeLider, 
       faixa: faixa,
@@ -483,9 +492,45 @@ const CadastroChefeMilitar = ({ grupoArmadoOptions, openNotification }) => {
   )
 }
 
-const CadastroLiderPolitico = ({ grupoArmadoOptions }) => {
+const CadastroLiderPolitico = ({ grupoArmadoOptions, openNotification }) => {
 
   const classes = useStyles();
+
+  const [nomeLider, setNomeLider] = useState('');
+  const [apoios, setApoios] = useState('');
+  const [grupoId, setGrupoId] = useState(0);
+
+  const handleChangeNome = (event) => {
+    setNomeLider(event.target.value);
+  }
+
+  const handleChangeApoios = (event) => {
+    setApoios(event.target.value);
+  }
+
+  const handleChangeGrupo = (event) => {
+    setGrupoId(event.target.value);
+  }
+
+  const onClickButton = () => {
+
+    api.post(`${url}/lider_politico`, { 
+      cod_grupo: grupoId, 
+      nome: nomeLider, 
+      apoios: apoios 
+    }).then(json => {
+
+      openNotification(json.data.msg);
+    }).catch(error => {
+
+      openNotification('Não foi possível cadastrar Líder Politíco', true);
+    }).finally(() => {
+
+      setNomeLider('');
+      setApoios('');
+      setGrupoId(0);
+    })
+  }
 
   return (
     <Card>
@@ -502,6 +547,10 @@ const CadastroLiderPolitico = ({ grupoArmadoOptions }) => {
               formControlProps={{
                 fullWidth: true,
               }}
+              inputProps={{
+                value: nomeLider,
+                onChange: handleChangeNome
+              }}
             />
           </GridItem>
           <GridItem xs={12} sm={12} md={6}>
@@ -510,6 +559,10 @@ const CadastroLiderPolitico = ({ grupoArmadoOptions }) => {
               id="apoios_lider"
               formControlProps={{
                 fullWidth: true,
+              }}
+              inputProps={{
+                value: apoios,
+                onChange: handleChangeApoios
               }}
             />
           </GridItem>
@@ -520,19 +573,73 @@ const CadastroLiderPolitico = ({ grupoArmadoOptions }) => {
           formControlProps={{
             fullWidth: true,
           }}
+          inputProps={{
+            value: grupoId,
+            onChange: handleChangeGrupo
+          }}
           options={grupoArmadoOptions}
         />
       </CardBody>
       <CardFooter>
-        <Button color="info">Cadastrar Líder Politíco</Button>
+        <Button color="info" onClick={onClickButton}>Cadastrar Líder Politíco</Button>
       </CardFooter>
     </Card>
   )
 }
 
-const CadastroConflito = () => {
+const CadastroConflito = ({ openNotification }) => {
 
   const classes = useStyles();
+
+  const [tipoConflito, setTipoConflito] = useState(0);
+  const [nomeConflito, setNomeConflito] = useState('');
+  const [numFeridos, setNumFeridos] = useState(0);
+  const [numMortos, setNumMortos] = useState(0);
+  const [atingido, setAtingido] = useState('');
+
+  const handleChangeTipoConflito = (event) => {
+    setTipoConflito(event.target.value)
+  }
+
+  const handleChangeNomeConflito = (event) => {
+    setNomeConflito(event.target.value)
+  }
+
+  const handleChangeNumFeridos = (event) => {
+    setNumFeridos(event.target.value)
+  }
+
+  const handleChangeNumMortos = (event) => {
+    setNumMortos(event.target.value)
+  }
+
+  const handleChangeAtingido = (event) => {
+    setAtingido(event.target.value)
+  }
+
+  const onClickButton = () => {
+
+    api.post(`${url}/conflito`, { 
+      nome: nomeConflito, 
+      num_feridos: numFeridos, 
+      num_mortos: numMortos, 
+      tipo: tipoConflito,
+      atingido: atingido
+    }).then(json => {
+
+      openNotification(json.data.msg);
+    }).catch(error => {
+
+      openNotification('Não foi possível cadastrar Conflito', true);
+    }).finally(() => {
+
+      setTipoConflito(0);
+      setNomeConflito('');
+      setNumFeridos(0);
+      setNumMortos(0);
+      setAtingido('');
+    })
+  }
 
   return (
     <Card>
@@ -549,6 +656,10 @@ const CadastroConflito = () => {
               formControlProps={{
                 fullWidth: true,
               }}
+              inputProps={{
+                value: tipoConflito,
+                onChange: handleChangeTipoConflito
+              }}
               options={typesConflicts}
             />
           </GridItem>
@@ -559,32 +670,59 @@ const CadastroConflito = () => {
               formControlProps={{
                 fullWidth: true,
               }}
+              inputProps={{
+                value: nomeConflito,
+                onChange: handleChangeNomeConflito
+              }}
             />
           </GridItem>
         </GridContainer>
         <GridContainer>
           <GridItem xs={12} sm={12} md={6}>
             <CustomInput
-              labelText="Número de Feridos"
+              labelText="Atingido"
+              id="atingido"
+              formControlProps={{
+                fullWidth: true,
+              }}
+              inputProps={{
+                value: atingido,
+                onChange: handleChangeAtingido
+              }}
+            />
+          </GridItem>
+          <GridItem xs={12} sm={12} md={3}>
+            <CustomInput
+              labelText="Feridos"
               id="num_feridos"
               formControlProps={{
                 fullWidth: true,
               }}
+              inputProps={{
+                value: numFeridos,
+                onChange: handleChangeNumFeridos,
+                type: 'number'
+              }}
             />
           </GridItem>
-          <GridItem xs={12} sm={12} md={6}>
+          <GridItem xs={12} sm={12} md={3}>
             <CustomInput
-              labelText="Número de Mortos"
+              labelText="Mortos"
               id="num_mortos"
               formControlProps={{
                 fullWidth: true,
+              }}
+              inputProps={{
+                value: numMortos,
+                onChange: handleChangeNumMortos,
+                type: 'number'
               }}
             />
           </GridItem>
         </GridContainer>
       </CardBody>
       <CardFooter>
-        <Button color="rose">Cadastrar Conflito</Button>
+        <Button color="rose" onClick={onClickButton}>Cadastrar Conflito</Button>
       </CardFooter>
     </Card>
   )

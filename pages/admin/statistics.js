@@ -91,33 +91,62 @@ function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArm
             tabName: "Conflitos",
             tabIcon: SportsKabaddi,
             tabContent: (
-              <Table
-                tableHeaderColor="warning"
-                tableHead={["Código", "Nome do Conflito", "Número de Feridos", "Número de Mortos"]}
-                tableData={topConflitos}
-              />
+              <>
+                <code style={{ fontSize: 20 }}>
+                  SELECT * FROM conflito <br/>
+                  ORDER BY num_mortos DESC <br/>
+                  LIMIT 5
+                </code>
+                <Table
+                  tableHeaderColor="warning"
+                  tableHead={["Código", "Nome do Conflito", "Número de Feridos", "Número de Mortos"]}
+                  tableData={topConflitos}
+                />
+              </>
             ),
           },
           {
             tabName: "Organizações",
             tabIcon: Domain,
             tabContent: (
-              <Table
-                tableHeaderColor="warning"
-                tableHead={["Código", "Nome da Organização", "Tipo", "Ajuda", "Mediações"]}
-                tableData={topOrganizacoes}
-              />
+              <>
+                <code style={{ fontSize: 20 }}>
+                  SELECT cod_organizacao, nome, tipo_org, tipo_ajuda, num_mediacoes_query.mediacoes FROM ( <br/>
+                  &nbsp;&nbsp;SELECT COUNT(cod_conflito) AS mediacoes, cod_organizacao <br/>
+                  &nbsp;&nbsp;FROM media <br/>
+                  &nbsp;&nbsp;GROUP BY cod_organizacao <br/>
+                  ) AS num_mediacoes_query NATURAL JOIN organizacao_mediadora <br/>
+                  ORDER BY mediacoes DESC <br/>
+                  LIMIT 5
+                </code>
+                <Table
+                  tableHeaderColor="warning"
+                  tableHead={["Código", "Nome da Organização", "Tipo", "Ajuda", "Mediações"]}
+                  tableData={topOrganizacoes}
+                />
+              </>
             ),
           },
           {
             tabName: "Grupos Armados",
             tabIcon: LocationSearching,
             tabContent: (
-              <Table
-                tableHeaderColor="warning"
-                tableHead={["Código", "Número de Armas", "Nome do Grupo"]}
-                tableData={topGruposArmados}
-              />
+              <>
+                <code style={{ fontSize: 20 }}>
+                  SELECT cod_grupo, num_armas_query.num_armas, nome FROM (<br/>
+                  &nbsp;&nbsp;SELECT SUM(num_armas) AS num_armas, cod_grupo<br/>
+                  &nbsp;&nbsp;FROM fornece<br/>
+                  &nbsp;&nbsp;GROUP BY cod_grupo<br/>
+                  ) AS num_armas_query NATURAL JOIN grupo_armado<br/>
+                  ORDER BY num_armas DESC<br/>
+                  LIMIT 5
+                </code>
+                <Table
+                  tableHeaderColor="warning"
+                  tableHead={["Código", "Número de Armas", "Nome do Grupo"]}
+                  tableData={topGruposArmados}
+                />
+              </>
             ),
           },
         ]}
