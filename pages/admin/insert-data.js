@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from 'axios'
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // layout for this page
@@ -20,7 +21,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import Handgun from "assets/img/handgun.svg";
-import { url } from "variables/fetch";
+import { url, api } from "variables/fetch";
 
 const styles = {
   cardCategoryWhite: {
@@ -48,7 +49,7 @@ const styles = {
 const typesConflicts = [
   { text: 'economico', value: 'economico' },
   { text: 'racial', value: 'racial' },
-  { text: 'territorial', value: 'territorial'},
+  { text: 'territorial', value: 'territorial' },
   { text: 'religioso', value: 'religioso' }
 ];
 
@@ -73,21 +74,12 @@ const CadastroGrupoArmado = () => {
     setNomeGrupo(e.target.value);
   }
 
-  const onClickButton = () => {
-    fetch(`${url}/grupo_armado`, { 
-      method: 'POST', 
-      body: { 
-        nome: nomeGrupo 
-      }
-    }).then(data => {
+  const onClickButton = async () => {
+    const response = await api.post(`${url}/grupo_armado`, {
+      nome: nomeGrupo
+    })
 
-      console.log(data);
-    }).catch(data => {
-
-      console.log(data);
-    });
-
-    // const gruposArmados = await response.json();
+    console.log(response)
   }
 
   return (
