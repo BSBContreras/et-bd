@@ -57,6 +57,7 @@ export default function CustomInput(props) {
         id={id}
         {...inputProps}
       >
+        <MenuItem disabled value={0}>Nenhum</MenuItem>
         {options.map(option => (
           <MenuItem key={option.value} value={option.value}>{option.text}</MenuItem>
         ))}

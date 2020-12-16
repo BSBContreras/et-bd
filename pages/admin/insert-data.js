@@ -42,9 +42,12 @@ const styles = {
   },
 };
 
-// const cod_grupo, num_barcos, num_avioes, num_tanques, num_homens, num_baixas;
-
-// nome, num_feridos, num_mortos, tipo
+const defaultDataSnackbar = {
+  open: false,
+  color: 'info',
+  message: 'Notification',
+  icon: CheckCircleIcon
+}
 
 const typesConflicts = [
   { text: 'economico', value: 'economico' },
@@ -66,7 +69,7 @@ export const getServerSideProps = async () => {
   }
 }
 
-const CadastroGrupoArmado = () => {
+const CadastroGrupoArmado = ({ openNotification }) => {
 
   const [nomeGrupo, setNomeGrupo] = useState();
 
@@ -74,12 +77,19 @@ const CadastroGrupoArmado = () => {
     setNomeGrupo(e.target.value);
   }
 
-  const onClickButton = async () => {
-    const response = await api.post(`${url}/grupo_armado`, {
+  const onClickButton = () => {
+    api.post(`${url}/grupo_armado`, {
       nome: nomeGrupo
-    })
+    }).then(json => {
 
-    console.log(response)
+      openNotification(json.data.msg);
+    }).catch(error => {
+
+      openNotification('Não foi possível cadastrar Grupo Armado', true);
+    }).finally(() => {
+
+      setNomeGrupo('');
+    })
   }
 
   return (
@@ -98,6 +108,7 @@ const CadastroGrupoArmado = () => {
             fullWidth: true,
           }}
           inputProps={{
+            value: nomeGrupo,
             onChange: handleChangeName
           }}
         />
@@ -109,9 +120,65 @@ const CadastroGrupoArmado = () => {
   )
 }
 
-const CadastroDivisao = ({ grupoArmadoOptions }) => {
+const CadastroDivisao = ({ grupoArmadoOptions, openNotification }) => {
 
   const classes = useStyles();
+
+  const [grupoId, setGrupoId] = useState(0);
+  const [numHomens, setNumHomens] = useState(0);
+  const [numBaixas, setNumBaixas] = useState(0);
+  const [numAvioes, setNumAvioes] = useState(0);
+  const [numBarcos, setNumBarcos] = useState(0);
+  const [numTanques, setNumTanques] = useState(0);
+
+  const handleChangeGrupo = (event) => {
+    setGrupoId(event.target.value)
+  }
+
+  const handleChangeNumHomens = (event) => {
+    setNumHomens(event.target.value)
+  }
+
+  const handleChangeNumBaixas = (event) => {
+    setNumBaixas(event.target.value)
+  }
+
+  const handleChangeNumAvioes = (event) => {
+    setNumAvioes(event.target.value)
+  }
+
+  const handleChangeNumBarcos = (event) => {
+    setNumBarcos(event.target.value)
+  }
+
+  const handleChangeNumTanques = (event) => {
+    setNumTanques(event.target.value)
+  }
+
+  const onClickButton = () => {
+    api.post(`${url}/divisao`, { 
+      cod_grupo: Number(grupoId), 
+      num_barcos: Number(numBarcos), 
+      num_avioes: Number(numAvioes), 
+      num_tanques: Number(numTanques), 
+      num_homens: Number(numHomens), 
+      num_baixas: Number(numBaixas)
+    }).then(json => {
+
+      openNotification(json.data.msg);
+    }).catch(error => {
+
+      openNotification('Não foi possível cadastrar Divisão', true);
+    }).finally(() => {
+
+      setGrupoId(0);
+      setNumHomens(0);
+      setNumBaixas(0);
+      setNumAvioes(0);
+      setNumBarcos(0);
+      setNumTanques(0);
+    })
+  }
 
   return (
     <Card>
@@ -128,6 +195,10 @@ const CadastroDivisao = ({ grupoArmadoOptions }) => {
               formControlProps={{
                 fullWidth: true,
               }}
+              inputProps={{
+                onChange: handleChangeGrupo,
+                value: grupoId
+              }}
               options={grupoArmadoOptions}
             />
           </GridItem>
@@ -138,6 +209,11 @@ const CadastroDivisao = ({ grupoArmadoOptions }) => {
               formControlProps={{
                 fullWidth: true,
               }}
+              inputProps={{
+                onChange: handleChangeNumHomens,
+                type: 'number',
+                value: numHomens
+              }}
             />
           </GridItem>
           <GridItem xs={12} sm={12} md={4}>
@@ -146,6 +222,11 @@ const CadastroDivisao = ({ grupoArmadoOptions }) => {
               id="num_baixas"
               formControlProps={{
                 fullWidth: true,
+              }}
+              inputProps={{
+                onChange: handleChangeNumBaixas,
+                type: 'number',
+                value: numBaixas
               }}
             />
           </GridItem>
@@ -158,6 +239,11 @@ const CadastroDivisao = ({ grupoArmadoOptions }) => {
               formControlProps={{
                 fullWidth: true,
               }}
+              inputProps={{
+                onChange: handleChangeNumAvioes,
+                type: 'number',
+                value: numAvioes
+              }}
             />
           </GridItem>
           <GridItem xs={12} sm={12} md={4}>
@@ -166,6 +252,11 @@ const CadastroDivisao = ({ grupoArmadoOptions }) => {
               id="num_barcos"
               formControlProps={{
                 fullWidth: true,
+              }}
+              inputProps={{
+                onChange: handleChangeNumBarcos,
+                type: 'number',
+                value: numBarcos
               }}
             />
           </GridItem>
@@ -176,20 +267,130 @@ const CadastroDivisao = ({ grupoArmadoOptions }) => {
               formControlProps={{
                 fullWidth: true,
               }}
+              inputProps={{
+                onChange: handleChangeNumTanques,
+                type: 'number',
+                value: numTanques
+              }}
             />
           </GridItem>
         </GridContainer>
       </CardBody>
       <CardFooter>
-        <Button color="primary">Cadastrar divisão</Button>
+        <Button color="primary" onClick={onClickButton}>Cadastrar divisão</Button>
       </CardFooter>
     </Card>
   )
 }
 
-const CadastroChefeMilitar = ({ grupoArmadoOptions }) => {
+const CadastroChefeMilitar = ({ grupoArmadoOptions, openNotification }) => {
 
   const classes = useStyles();
+
+  const [faixa, setFaixa] = useState('');
+  
+  const [lideres, setLideres] = useState([]);
+  const [grupoIdLider, setGrupoIdLider] = useState(0);
+  const [nomeLider, setNomeLider] = useState(0);
+
+  const [divisoes, setDivisoes] = useState([]);
+  const [grupoIdDivisao, setGrupoIdDivisao] = useState(0);
+  const [numDivisao, setNumDivisao] = useState(0);
+
+  const handleChangeFaixa = (e) => {
+    setFaixa(e.target.value);
+  }
+
+  const handleChangeGrupoLider = (event) => {
+    const grupoIdLider = event.target.value;
+
+    api.get(`${url}/grupo_armado_lider/${grupoIdLider}`)
+    .then(json => {
+      const { data } = json;
+
+      if(data.length > 0) {
+        
+        setLideres(json.data.map(lider => ({
+          value: lider.nome,
+          text: lider.nome
+        })));
+      } else {
+
+        openNotification(`O grupo armado ${grupoIdLider} não possui nenhum líder`, true);
+      }
+    })
+    .catch(error => {
+
+      openNotification('Não foi possível carregar os Lideres', true);
+    })
+    .finally(() => {
+
+      setGrupoIdLider(grupoIdLider);
+    })
+  }
+
+  const handleChangeLider = (event) => {
+    setNomeLider(event.target.value);
+  }
+
+  const handleChangeGrupodivisao = (event) => {
+    const grupoIdDivisao = event.target.value;
+
+    api.get(`${url}/grupo_armado_divisao/${grupoIdDivisao}`)
+    .then(json => {
+      const { data } = json;
+
+      if(data.length > 0) {
+        
+        setDivisoes(json.data.map(divisao => ({
+          value: divisao.num_divisao,
+          text: divisao.num_divisao
+        })));
+      } else {
+
+        openNotification(`O grupo armado ${grupoIdDivisao} não possui nenhuma divisão`, true);
+      }
+    })
+    .catch(error => {
+
+      openNotification('Não foi possível carregar as Divisões', true);
+    })
+    .finally(() => {
+
+      setGrupoIdDivisao(grupoIdDivisao);
+    })
+  }
+
+  const handleChangeDivisao = (event) => {
+    setNumDivisao(event.target.value);
+  }
+
+  const onClickButton = () => {
+    api.post(`${url}/chefe_militar`, { 
+      nome_lider: nomeLider, 
+      faixa: faixa,
+      cod_grupo_lider: Number(grupoIdLider), 
+      num_divisao: Number(numDivisao), 
+      cod_grupo_divisao: Number(grupoIdDivisao), 
+    }).then(json => {
+
+      openNotification(json.data.msg);
+    }).catch(error => {
+
+      openNotification('Não foi possível cadastrar o Chefe Militar', true);
+    }).finally(() => {
+
+      setFaixa('');
+
+      setLideres([]);
+      setGrupoIdLider(0);
+      setNomeLider(0);
+
+      setDivisoes([]);
+      setGrupoIdDivisao(0);
+      setNumDivisao(0);
+    })
+  }
 
   return (
     <Card>
@@ -202,9 +403,13 @@ const CadastroChefeMilitar = ({ grupoArmadoOptions }) => {
           <GridItem xs={12} sm={12} md={4}>
             <CustomInput
               labelText="Faixa do chefe militar"
-              id="faixe_chefe"
+              id="faixa_chefe"
               formControlProps={{
                 fullWidth: true,
+              }}
+              inputProps={{
+                value: faixa,
+                onChange: handleChangeFaixa
               }}
             />
           </GridItem>
@@ -215,6 +420,10 @@ const CadastroChefeMilitar = ({ grupoArmadoOptions }) => {
               formControlProps={{
                 fullWidth: true,
               }}
+              inputProps={{
+                value: grupoIdLider,
+                onChange: handleChangeGrupoLider
+              }}
               options={grupoArmadoOptions}
             />
           </GridItem>
@@ -224,6 +433,10 @@ const CadastroChefeMilitar = ({ grupoArmadoOptions }) => {
               id="grupo_divisao_chefe"
               formControlProps={{
                 fullWidth: true,
+              }}
+              inputProps={{
+                value: grupoIdDivisao,
+                onChange: handleChangeGrupodivisao
               }}
               options={grupoArmadoOptions}
             />
@@ -239,9 +452,11 @@ const CadastroChefeMilitar = ({ grupoArmadoOptions }) => {
                 fullWidth: true,
               }}
               inputProps={{
-                disabled: true,
+                disabled: lideres.length === 0,
+                onChange: handleChangeLider,
+                value: nomeLider
               }}
-              options={[{ value: 0, text: 'zero' }]}
+              options={lideres}
             />
           </GridItem>
           <GridItem xs={12} sm={12} md={4}>
@@ -252,15 +467,17 @@ const CadastroChefeMilitar = ({ grupoArmadoOptions }) => {
                 fullWidth: true,
               }}
               inputProps={{
-                disabled: true,
+                disabled: divisoes.length === 0,
+                onChange: handleChangeDivisao,
+                value: numDivisao
               }}
-              options={[{ value: 0, text: 'zero' }]}
+              options={divisoes}
             />
           </GridItem>
         </GridContainer>
       </CardBody>
       <CardFooter>
-        <Button color="warning">Cadastrar chefe militar</Button>
+        <Button color="warning" onClick={onClickButton}>Cadastrar chefe militar</Button>
       </CardFooter>
     </Card>
   )
@@ -373,13 +590,6 @@ const CadastroConflito = () => {
   )
 }
 
-const defaultDataSnackbar = {
-  open: false,
-  color: 'info',
-  message: 'Notification',
-  icon: CheckCircleIcon
-}
-
 function InsertData({ gruposArmados }) {
 
   const [grupoArmadoOptions, setGrupoArmadoOptions] = useState([]);
@@ -392,10 +602,14 @@ function InsertData({ gruposArmados }) {
       color: error ? 'danger' : 'success',
       icon: error ? ErrorIcon : CheckCircleIcon
     })
+
+    setTimeout(() => {
+      closeSnackbar();
+    }, 6000);
   }
 
   const closeSnackbar = () => {
-    setSnackbarData(defaultDataSnackbar);
+    setSnackbarData(prev => ({...prev, open: false }));
   }
 
   useEffect(() => {
@@ -415,19 +629,19 @@ function InsertData({ gruposArmados }) {
       />
       <GridContainer>
         <GridItem xs={12} sm={12} md={4}>
-          <CadastroGrupoArmado />
+          <CadastroGrupoArmado openNotification={openSnackbar} />
         </GridItem>
         <GridItem xs={12} sm={12} md={8}>
-          <CadastroDivisao grupoArmadoOptions={grupoArmadoOptions} />
+          <CadastroDivisao grupoArmadoOptions={grupoArmadoOptions} openNotification={openSnackbar} />
         </GridItem>
       </GridContainer>
-      <CadastroChefeMilitar grupoArmadoOptions={grupoArmadoOptions} />
+      <CadastroChefeMilitar grupoArmadoOptions={grupoArmadoOptions} openNotification={openSnackbar} />
       <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
-          <CadastroLiderPolitico grupoArmadoOptions={grupoArmadoOptions} />
+          <CadastroLiderPolitico grupoArmadoOptions={grupoArmadoOptions} openNotification={openSnackbar} />
         </GridItem>
         <GridItem xs={12} sm={12} md={6}>
-          <CadastroConflito />
+          <CadastroConflito openNotification={openSnackbar} />
         </GridItem>
       </GridContainer>
     </div>
