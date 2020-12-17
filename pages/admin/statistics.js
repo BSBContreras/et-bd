@@ -1,6 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ChartistGraph from "react-chartist";
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { grayscale } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
 import Admin from "layouts/Admin.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -69,7 +71,7 @@ export const getServerSideProps = async () => {
 function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArmados, traficante }) {
 
   const classes = useStyles();
-  
+
   return (
     <>
       <Card chart>
@@ -79,12 +81,12 @@ function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArm
           </h4>
         </CardHeader>
         <CardBody>
-          <code style={{ fontSize: 20 }}>
-            SELECT COUNT(*) FROM racial <br/>
-            SELECT COUNT(*) FROM religioso <br/>
-            SELECT COUNT(*) FROM territorial <br/>
-            SELECT COUNT(*) FROM economico <br/>
-          </code>
+          <SyntaxHighlighter language="sql" style={grayscale} customStyle={{ fontSize: "18px", lineHight: "2" }}>
+            {'SELECT COUNT(*) FROM racial\n' +
+              'SELECT COUNT(*) FROM religioso\n' +
+              'SELECT COUNT(*) FROM territorial\n' +
+              'SELECT COUNT(*) FROM economico'}
+          </SyntaxHighlighter>
           <ChartistGraph
             className="ct-chart"
             data={histogramData}
@@ -105,11 +107,11 @@ function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArm
             tabIcon: SportsKabaddi,
             tabContent: (
               <>
-                <code style={{ fontSize: 20 }}>
-                  SELECT * FROM conflito <br/>
-                  ORDER BY num_mortos DESC <br/>
-                  LIMIT 5
-                </code>
+                <SyntaxHighlighter language="sql" style={grayscale} customStyle={{ fontSize: "18px", lineHight: "2" }}>
+                  {'SELECT * FROM conflito\n' +
+                    'ORDER BY num_mortos DESC\n' +
+                    'LIMIT 5'}
+                </SyntaxHighlighter>
                 <Table
                   tableHeaderColor="warning"
                   tableHead={["Código", "Nome do Conflito", "Número de Feridos", "Número de Mortos"]}
@@ -123,15 +125,15 @@ function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArm
             tabIcon: Domain,
             tabContent: (
               <>
-                <code style={{ fontSize: 20 }}>
-                  SELECT cod_organizacao, nome, tipo_org, tipo_ajuda, num_mediacoes_query.mediacoes FROM ( <br/>
-                  &nbsp;&nbsp;SELECT COUNT(cod_conflito) AS mediacoes, cod_organizacao <br/>
-                  &nbsp;&nbsp;FROM media <br/>
-                  &nbsp;&nbsp;GROUP BY cod_organizacao <br/>
-                  ) AS num_mediacoes_query NATURAL JOIN organizacao_mediadora <br/>
-                  ORDER BY mediacoes DESC <br/>
-                  LIMIT 5
-                </code>
+                <SyntaxHighlighter language="sql" style={grayscale} customStyle={{ fontSize: "18px", lineHight: "2" }}>
+                  {'SELECT cod_organizacao, nome, tipo_org, tipo_ajuda, num_mediacoes_query.mediacoes FROM (\n' +
+                    '\tSELECT COUNT(cod_conflito) AS mediacoes, cod_organizacao\n' +
+                    '\tFROM media\n' +
+                    '\tGROUP BY cod_organizacao\n' +
+                    ') AS num_mediacoes_query NATURAL JOIN organizacao_mediadora\n' +
+                    'ORDER BY mediacoes DESC\n' +
+                    'LIMIT 5'}
+                </SyntaxHighlighter>
                 <Table
                   tableHeaderColor="warning"
                   tableHead={["Código", "Nome da Organização", "Tipo", "Ajuda", "Mediações"]}
@@ -145,15 +147,15 @@ function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArm
             tabIcon: LocationSearching,
             tabContent: (
               <>
-                <code style={{ fontSize: 20 }}>
-                  SELECT cod_grupo, num_armas_query.num_armas, nome FROM (<br/>
-                  &nbsp;&nbsp;SELECT SUM(num_armas) AS num_armas, cod_grupo<br/>
-                  &nbsp;&nbsp;FROM fornece<br/>
-                  &nbsp;&nbsp;GROUP BY cod_grupo<br/>
-                  ) AS num_armas_query NATURAL JOIN grupo_armado<br/>
-                  ORDER BY num_armas DESC<br/>
-                  LIMIT 5
-                </code>
+                <SyntaxHighlighter language="sql" style={grayscale} customStyle={{ fontSize: "18px", lineHight: "2" }}>
+                  {'SELECT cod_grupo, num_armas_query.num_armas, nome FROM (\n' +
+                    '\tSELECT SUM(num_armas) AS num_armas, cod_grupo\n' +
+                    '\tFROM fornece\n' +
+                    '\tGROUP BY cod_grupo\n' +
+                    ') AS num_armas_query NATURAL JOIN grupo_armado\n' +
+                    'ORDER BY num_armas DESC\n' +
+                    'LIMIT 5'}
+                </SyntaxHighlighter>
                 <Table
                   tableHeaderColor="warning"
                   tableHead={["Código", "Número de Armas", "Nome do Grupo"]}
@@ -170,11 +172,11 @@ function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArm
           <h4 className={classes.cardTitleWhite}>Listar os traficantes e os grupos armados (Nome) para os quais os traficantes fornecem armas “Barret M82” ou “M200 intervention”.</h4>
         </CardHeader>
         <CardBody>
-          <code style={{ fontSize: 20 }}>
-            SELECT nome as nome_grupo, nome_trafica <br />
-            FROM fornece NATURAL JOIN grupo_armado <br />
-            WHERE nome_arma = 'Barret M82' OR nome_arma = 'M200 intervention'
-          </code>
+          <SyntaxHighlighter language="sql" style={grayscale} customStyle={{ fontSize: "18px", lineHight: "2" }}>
+            {'SELECT nome as nome_grupo, nome_trafica\n' +
+              'FROM fornece NATURAL JOIN grupo_armado\n' +
+              'WHERE nome_arma = \'Barret M82\' OR nome_arma = \'M200 intervention\''}
+          </SyntaxHighlighter>
           <Table
             tableHeaderColor="info"
             tableHead={["Grupo Armado", "Nome do Traficante"]}

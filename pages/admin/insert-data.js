@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios'
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // layout for this page
@@ -156,12 +155,12 @@ const CadastroDivisao = ({ grupoArmadoOptions, openNotification }) => {
   }
 
   const onClickButton = () => {
-    api.post(`${url}/divisao`, { 
-      cod_grupo: Number(grupoId), 
-      num_barcos: Number(numBarcos), 
-      num_avioes: Number(numAvioes), 
-      num_tanques: Number(numTanques), 
-      num_homens: Number(numHomens), 
+    api.post(`${url}/divisao`, {
+      cod_grupo: Number(grupoId),
+      num_barcos: Number(numBarcos),
+      num_avioes: Number(numAvioes),
+      num_tanques: Number(numTanques),
+      num_homens: Number(numHomens),
       num_baixas: Number(numBaixas)
     }).then(json => {
 
@@ -288,7 +287,7 @@ const CadastroChefeMilitar = ({ grupoArmadoOptions, openNotification }) => {
   const classes = useStyles();
 
   const [faixa, setFaixa] = useState('');
-  
+
   const [lideres, setLideres] = useState([]);
   const [grupoIdLider, setGrupoIdLider] = useState(0);
   const [nomeLider, setNomeLider] = useState(0);
@@ -305,28 +304,28 @@ const CadastroChefeMilitar = ({ grupoArmadoOptions, openNotification }) => {
     const grupoIdLider = event.target.value;
 
     api.get(`${url}/grupo_armado_lider/${grupoIdLider}`)
-    .then(json => {
-      const { data } = json;
+      .then(json => {
+        const { data } = json;
 
-      if(data.length > 0) {
-        
-        setLideres(json.data.map(lider => ({
-          value: lider.nome,
-          text: lider.nome
-        })));
-      } else {
+        if (data.length > 0) {
 
-        openNotification(`O grupo armado ${grupoIdLider} não possui nenhum líder`, true);
-      }
-    })
-    .catch(error => {
+          setLideres(json.data.map(lider => ({
+            value: lider.nome,
+            text: lider.nome
+          })));
+        } else {
 
-      openNotification('Não foi possível carregar os Lideres', true);
-    })
-    .finally(() => {
+          openNotification(`O grupo armado ${grupoIdLider} não possui nenhum líder`, true);
+        }
+      })
+      .catch(error => {
 
-      setGrupoIdLider(grupoIdLider);
-    })
+        openNotification('Não foi possível carregar os Lideres', true);
+      })
+      .finally(() => {
+
+        setGrupoIdLider(grupoIdLider);
+      })
   }
 
   const handleChangeLider = (event) => {
@@ -337,28 +336,28 @@ const CadastroChefeMilitar = ({ grupoArmadoOptions, openNotification }) => {
     const grupoIdDivisao = event.target.value;
 
     api.get(`${url}/grupo_armado_divisao/${grupoIdDivisao}`)
-    .then(json => {
-      const { data } = json;
+      .then(json => {
+        const { data } = json;
 
-      if(data.length > 0) {
-        
-        setDivisoes(json.data.map(divisao => ({
-          value: divisao.num_divisao,
-          text: divisao.num_divisao
-        })));
-      } else {
+        if (data.length > 0) {
 
-        openNotification(`O grupo armado ${grupoIdDivisao} não possui nenhuma divisão`, true);
-      }
-    })
-    .catch(error => {
+          setDivisoes(json.data.map(divisao => ({
+            value: divisao.num_divisao,
+            text: divisao.num_divisao
+          })));
+        } else {
 
-      openNotification('Não foi possível carregar as Divisões', true);
-    })
-    .finally(() => {
+          openNotification(`O grupo armado ${grupoIdDivisao} não possui nenhuma divisão`, true);
+        }
+      })
+      .catch(error => {
 
-      setGrupoIdDivisao(grupoIdDivisao);
-    })
+        openNotification('Não foi possível carregar as Divisões', true);
+      })
+      .finally(() => {
+
+        setGrupoIdDivisao(grupoIdDivisao);
+      })
   }
 
   const handleChangeDivisao = (event) => {
@@ -367,20 +366,20 @@ const CadastroChefeMilitar = ({ grupoArmadoOptions, openNotification }) => {
 
   const onClickButton = () => {
 
-    console.log({ 
-      nome_lider: nomeLider, 
+    console.log({
+      nome_lider: nomeLider,
       faixa: faixa,
-      cod_grupo_lider: Number(grupoIdLider), 
-      num_divisao: Number(numDivisao), 
-      cod_grupo_divisao: Number(grupoIdDivisao), 
+      cod_grupo_lider: Number(grupoIdLider),
+      num_divisao: Number(numDivisao),
+      cod_grupo_divisao: Number(grupoIdDivisao),
     })
 
-    api.post(`${url}/chefe_militar`, { 
-      nome_lider: nomeLider, 
+    api.post(`${url}/chefe_militar`, {
+      nome_lider: nomeLider,
       faixa: faixa,
-      cod_grupo_lider: Number(grupoIdLider), 
-      num_divisao: Number(numDivisao), 
-      cod_grupo_divisao: Number(grupoIdDivisao), 
+      cod_grupo_lider: Number(grupoIdLider),
+      num_divisao: Number(numDivisao),
+      cod_grupo_divisao: Number(grupoIdDivisao),
     }).then(json => {
 
       openNotification(json.data.msg);
@@ -514,10 +513,10 @@ const CadastroLiderPolitico = ({ grupoArmadoOptions, openNotification }) => {
 
   const onClickButton = () => {
 
-    api.post(`${url}/lider_politico`, { 
-      cod_grupo: grupoId, 
-      nome: nomeLider, 
-      apoios: apoios 
+    api.post(`${url}/lider_politico`, {
+      cod_grupo: grupoId,
+      nome: nomeLider,
+      apoios: apoios
     }).then(json => {
 
       openNotification(json.data.msg);
@@ -619,10 +618,10 @@ const CadastroConflito = ({ openNotification }) => {
 
   const onClickButton = () => {
 
-    api.post(`${url}/conflito`, { 
-      nome: nomeConflito, 
-      num_feridos: numFeridos, 
-      num_mortos: numMortos, 
+    api.post(`${url}/conflito`, {
+      nome: nomeConflito,
+      num_feridos: numFeridos,
+      num_mortos: numMortos,
       tipo: tipoConflito,
       atingido: atingido
     }).then(json => {
@@ -747,7 +746,7 @@ function InsertData({ gruposArmados }) {
   }
 
   const closeSnackbar = () => {
-    setSnackbarData(prev => ({...prev, open: false }));
+    setSnackbarData(prev => ({ ...prev, open: false }));
   }
 
   useEffect(() => {
