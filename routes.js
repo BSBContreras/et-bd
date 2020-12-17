@@ -17,14 +17,15 @@
 */
 // @material-ui/icons
 import Statistics from "@material-ui/icons/Equalizer";
-import Dashboard from "@material-ui/icons/Dashboard";
-import Person from "@material-ui/icons/Person";
-import LibraryBooks from "@material-ui/icons/LibraryBooks";
-import BubbleChart from "@material-ui/icons/BubbleChart";
-import LocationOn from "@material-ui/icons/LocationOn";
-import Notifications from "@material-ui/icons/Notifications";
-import Unarchive from "@material-ui/icons/Unarchive";
+// import Dashboard from "@material-ui/icons/Dashboard";
+// import Person from "@material-ui/icons/Person";
+// import LibraryBooks from "@material-ui/icons/LibraryBooks";
+// import BubbleChart from "@material-ui/icons/BubbleChart";
+// import LocationOn from "@material-ui/icons/LocationOn";
+// import Notifications from "@material-ui/icons/Notifications";
+// import Unarchive from "@material-ui/icons/Unarchive";
 import Create from "@material-ui/icons/Create";
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 
 const dashboardRoutes = [
   {
@@ -40,6 +41,13 @@ const dashboardRoutes = [
     icon: Create,
 
     layout: "/admin",
+  },
+  {
+    path: "/rules",
+    name: "Restrições",
+    icon: PlaylistAddCheckIcon,
+
+    layout: "/admin"
   }
   // {
   //   path: "/dashboard",

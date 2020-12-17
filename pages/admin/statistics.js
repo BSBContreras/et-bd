@@ -50,19 +50,26 @@ export const getServerSideProps = async () => {
 
   const topGruposArmados = data.map(toStringArray)
 
+  res = await fetch(`${url}/traficante_grupoarmado`)
+  data = await res.json()
+
+  const traficante = data.map(toStringArray)
+
   return {
     props: {
       histogramData,
       topConflitos,
       topOrganizacoes,
-      topGruposArmados
+      topGruposArmados,
+      traficante
     }
   }
 }
 
-function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArmados }) {
-  const classes = useStyles();
+function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArmados, traficante }) {
 
+  const classes = useStyles();
+  
   return (
     <>
       <Card chart>
@@ -72,6 +79,12 @@ function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArm
           </h4>
         </CardHeader>
         <CardBody>
+          <code style={{ fontSize: 20 }}>
+            SELECT COUNT(*) FROM racial <br/>
+            SELECT COUNT(*) FROM religioso <br/>
+            SELECT COUNT(*) FROM territorial <br/>
+            SELECT COUNT(*) FROM economico <br/>
+          </code>
           <ChartistGraph
             className="ct-chart"
             data={histogramData}
@@ -151,6 +164,24 @@ function Statistics({ histogramData, topConflitos, topOrganizacoes, topGruposArm
           },
         ]}
       />
+
+      <Card>
+        <CardHeader color="success">
+          <h4 className={classes.cardTitleWhite}>Listar os traficantes e os grupos armados (Nome) para os quais os traficantes fornecem armas “Barret M82” ou “M200 intervention”.</h4>
+        </CardHeader>
+        <CardBody>
+          <code style={{ fontSize: 20 }}>
+            SELECT nome as nome_grupo, nome_trafica <br />
+            FROM fornece NATURAL JOIN grupo_armado <br />
+            WHERE nome_arma = 'Barret M82' OR nome_arma = 'M200 intervention'
+          </code>
+          <Table
+            tableHeaderColor="info"
+            tableHead={["Grupo Armado", "Nome do Traficante"]}
+            tableData={traficante}
+          />
+        </CardBody>
+      </Card>
     </>
   );
 }
