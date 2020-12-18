@@ -17,7 +17,7 @@
 */
 // @material-ui/icons
 import Statistics from "@material-ui/icons/Equalizer";
-// import Dashboard from "@material-ui/icons/Dashboard";
+import Dashboard from "@material-ui/icons/Dashboard";
 // import Person from "@material-ui/icons/Person";
 // import LibraryBooks from "@material-ui/icons/LibraryBooks";
 // import BubbleChart from "@material-ui/icons/BubbleChart";
@@ -46,6 +46,13 @@ const dashboardRoutes = [
     path: "/rules",
     name: "Restrições",
     icon: PlaylistAddCheckIcon,
+
+    layout: "/admin"
+  },
+  {
+    path: "/diagram",
+    name: "Diagrama",
+    icon: Dashboard,
 
     layout: "/admin"
   }

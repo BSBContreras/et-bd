@@ -85,6 +85,7 @@ export default class MyApp extends App {
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
           />
           <title>ET-DB</title>
+          <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js"></script>
         </Head>
         <Layout>
           <Component {...pageProps} />

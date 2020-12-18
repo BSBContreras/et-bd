@@ -48,7 +48,7 @@ export default function Admin({ children, ...rest }) {
     setMobileOpen(!mobileOpen);
   };
   const getRoute = () => {
-    return router.pathname !== "/admin/maps";
+    return router.pathname !== "/admin/diagram";
   };
   const resizeFunction = () => {
     if (window.innerWidth >= 960) {
